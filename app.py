@@ -3,14 +3,9 @@ import requests
 import pandas as pd
 
 # ---------------- PAGE CONFIG ----------------
-st.set_page_config(
-    page_title="Homestay Data Analysis",
-    page_icon="🏠",
-    layout="wide"
-)
+st.set_page_config( page_title="Homestay Data Analysis — Government of Meghalaya", page_icon="🏠", layout="wide" )
 
-st.title("🏠 Homestay Data Analysis Dashboard")
-st.markdown("---")
+st.markdown( """ <div style="text-align:center;"> <h1 style="color:blue; font-weight:700; margin:0;">Homestay Data Analysis</h1> <p style="color:blue; font-weight:700; margin:0;">Government of Meghalaya</p> </div> """, unsafe_allow_html=True, )
 
 # ---------------- API CONFIG ----------------
 url = "https://www.cmconnectvdv.meghalaya.gov.in/admin-api/api/v1/hdsbpm/getAllHomeStayData"
@@ -23,7 +18,7 @@ payload = {
 try:
     auth_token = st.secrets["api"]["auth_token"]
 except KeyError:
-    st.error("⚠️ Authorization token not found in Streamlit Secrets")
+    st.error(" Authorization token not found in Streamlit Secrets")
     st.stop()
 
 
@@ -56,7 +51,7 @@ with st.spinner("Fetching homestay data..."):
 
 # ---------------- VALIDATION ----------------
 if not data_homestay or data_homestay.get("response_code") != "00":
-    st.error("❌ Failed to fetch valid data")
+    st.error(" Failed to fetch valid data")
     st.json(data_homestay)
     st.stop()
 
@@ -185,7 +180,7 @@ combined_df.index = range(1, len(combined_df) + 1)
 
 
 # ---------------- UI ----------------
-st.markdown("## 📊 Summary")
+st.markdown("##  Summary")
 
 c1, c2, c3 = st.columns(3)
 c1.metric("Total New Homestays", f"{total_new:,}")
@@ -193,7 +188,7 @@ c2.metric("Total Upgradations", f"{total_upg:,}")
 c3.metric("Total Combined", f"{total_new + total_upg:,}")
 
 st.markdown("---")
-st.markdown("## 📋 Combined Data Table")
+st.markdown("##  Combined Data Table")
 
 st.dataframe(
     combined_df,
@@ -206,3 +201,4 @@ st.download_button(
     file_name="homestay_combined_data.csv",
     mime="text/csv"
 )
+
