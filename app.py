@@ -91,7 +91,7 @@ New_homestay = pd.DataFrame(rows[0])
 Upgradation_of_Existing_homestay = pd.DataFrame(rows[1])
 
 
-# ---------------- PIVOTS (ORIGINAL LOGIC) ----------------
+# ---------------- PIVOTS ----------------
 pivot_df_Upgradation = Upgradation_of_Existing_homestay.pivot_table(
     index=["district_name", "block_cluster"],
     values="member_id",
@@ -99,10 +99,7 @@ pivot_df_Upgradation = Upgradation_of_Existing_homestay.pivot_table(
     dropna=False
 ).reset_index()
 
-pivot_df_Upgradation.rename(
-    columns={"member_id": "member_count"},
-    inplace=True
-)
+pivot_df_Upgradation.rename(columns={"member_id": "member_count"}, inplace=True)
 
 pivot_df_New_homestay = New_homestay.pivot_table(
     index=["district_name", "block_cluster"],
@@ -111,10 +108,7 @@ pivot_df_New_homestay = New_homestay.pivot_table(
     dropna=False
 ).reset_index()
 
-pivot_df_New_homestay.rename(
-    columns={"member_id": "member_count"},
-    inplace=True
-)
+pivot_df_New_homestay.rename(columns={"member_id": "member_count"}, inplace=True)
 
 
 # ---------------- FILTER ----------------
@@ -123,15 +117,8 @@ pivot_df_New_homestay = pivot_df_New_homestay[
     (pivot_df_New_homestay["member_count"].astype(str).str.strip() != "")
 ]
 
-pivot_df_New_homestay.rename(
-    columns={"member_count": "member_count_New"},
-    inplace=True
-)
-
-pivot_df_Upgradation.rename(
-    columns={"member_count": "member_count_Upgradation"},
-    inplace=True
-)
+pivot_df_New_homestay.rename(columns={"member_count": "member_count_New"}, inplace=True)
+pivot_df_Upgradation.rename(columns={"member_count": "member_count_Upgradation"}, inplace=True)
 
 
 # ---------------- MERGE ----------------
@@ -160,20 +147,6 @@ combined_df = pd.concat([total_row, combined_df], ignore_index=True)
 
 
 # ---------------- FINAL CLEANUP ----------------
-combined_df = combined_df[
-    ~(
-        (
-            combined_df["member_count_New"].isna() |
-            (combined_df["member_count_New"].astype(str).str.strip() == "")
-        )
-        &
-        (
-            combined_df["member_count_Upgradation"].isna() |
-            (combined_df["member_count_Upgradation"].astype(str).str.strip() == "")
-        )
-    )
-]
-
 combined_df.columns = combined_df.columns.str.upper().str.replace("_", " ")
 
 combined_df.rename(columns={
@@ -188,7 +161,13 @@ combined_df = combined_df[
 combined_df["NEW HOMESTAY"] = pd.to_numeric(combined_df["NEW HOMESTAY"], errors="coerce").fillna(0).astype(int)
 combined_df["UPGRADATION"] = pd.to_numeric(combined_df["UPGRADATION"], errors="coerce").fillna(0).astype(int)
 
-combined_df.index = range(1, len(combined_df) + 1)
+
+# ---------------- FIX SERIAL NUMBER ----------------
+display_df = combined_df.copy()
+display_df.insert(0, "S. NO", "")
+display_df.loc[display_df["DISTRICT NAME"] != "TOTAL", "S. NO"] = range(
+    1, len(display_df[display_df["DISTRICT NAME"] != "TOTAL"]) + 1
+)
 
 
 # ---------------- UI ----------------
@@ -200,10 +179,10 @@ c2.metric("Total Upgradations", f"{total_upg:,}")
 c3.metric("Total Combined", f"{total_new + total_upg:,}")
 
 
-# ---------------- TABLE (HTML – GOOD UI) ----------------
+# ---------------- TABLE ----------------
 st.markdown(
-    combined_df.to_html(
-        index=True,
+    display_df.to_html(
+        index=False,
         classes="custom-table",
         border=0
     ),
@@ -214,8 +193,7 @@ st.markdown(
 # ---------------- DOWNLOAD ----------------
 st.download_button(
     label="📥 Download Combined Data as CSV",
-    data=combined_df.to_csv(index=True),
+    data=display_df.to_csv(index=False),
     file_name="homestay_combined_data.csv",
     mime="text/csv"
 )
-
