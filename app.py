@@ -194,7 +194,7 @@ combined_df.index = range(1, len(combined_df) + 1)
 # ---------------- UI ----------------
 st.markdown("## Summary")
 
-c1, c2, c3 = st.columns(3)
+c1, c2, c3 = st.columns([1, 1, 1])
 c1.metric("Total New Homestays", f"{total_new:,}")
 c2.metric("Total Upgradations", f"{total_upg:,}")
 c3.metric("Total Combined", f"{total_new + total_upg:,}")
@@ -218,3 +218,4 @@ st.download_button(
     file_name="homestay_combined_data.csv",
     mime="text/csv"
 )
+
