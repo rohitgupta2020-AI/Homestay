@@ -3,9 +3,9 @@ import requests
 import pandas as pd
 
 # ---------------- PAGE CONFIG ----------------
-st.set_page_config( page_title="Homestay Data Analysis — Government of Meghalaya", page_icon="", layout="wide" )
+st.set_page_config( page_title="Meghalaya Homestay Dashboard — Government of Meghalaya", page_icon="", layout="wide" )
 
-st.markdown( """ <div style="text-align:center;"> <h1 style="color:#b4a7d6; font-weight:700; margin:0;">Homestay Data Analysis</h1> <p style="color:blue; font-weight:700; margin:0;">Government of Meghalaya</p> </div> """, unsafe_allow_html=True, )
+st.markdown( """ <div style="text-align:center;"> <h1 style="color:#2F539B; font-weight:700; margin:0;">Meghalaya Homestay Dashboard </h1> <p style="color:#36454F; font-weight:700; margin:0;">Government of Meghalaya</p> </div> """, unsafe_allow_html=True, )
 
 # ---------------- API CONFIG ----------------
 url = "https://www.cmconnectvdv.meghalaya.gov.in/admin-api/api/v1/hdsbpm/getAllHomeStayData"
@@ -201,5 +201,6 @@ st.download_button(
     file_name="homestay_combined_data.csv",
     mime="text/csv"
 )
+
 
 
