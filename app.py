@@ -2,6 +2,23 @@ import streamlit as st
 import requests
 import pandas as pd
 
+
+
+# ---------------- HIDE STREAMLIT TOOLBAR (GITHUB / FORK) ----------------
+st.markdown(
+    """
+    <style>
+    [data-testid="stToolbar"] {
+        visibility: hidden;
+        height: 0px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
+
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config( page_title="Meghalaya Homestay Dashboard — Government of Meghalaya", page_icon="", layout="wide" )
 
@@ -201,6 +218,7 @@ st.download_button(
     file_name="homestay_combined_data.csv",
     mime="text/csv"
 )
+
 
 
 
