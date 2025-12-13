@@ -190,7 +190,22 @@ combined_df["UPGRADATION"] = pd.to_numeric(combined_df["UPGRADATION"], errors="c
 
 combined_df.index = range(1, len(combined_df) + 1)
 
+# ---------------- FIX SERIAL NUMBER ----------------
+display_df = combined_df.copy()
 
+# create empty serial column
+display_df.insert(0, "S. NO", "")
+
+# assign serial numbers ONLY to data rows (exclude TOTAL)
+display_df.loc[
+    display_df["DISTRICT NAME"] != "TOTAL",
+    "S. NO"
+] = range(
+    1,
+    len(display_df[display_df["DISTRICT NAME"] != "TOTAL"]) + 1
+)
+
+    
 # ---------------- UI ----------------
 st.markdown("## Summary")
 
@@ -203,7 +218,7 @@ c3.metric("Total Combined", f"{total_new + total_upg:,}")
 # ---------------- TABLE (HTML – GOOD UI) ----------------
 st.markdown(
     combined_df.to_html(
-        index=False,
+        index=True,
         classes="custom-table",
         border=0
     ),
@@ -218,6 +233,7 @@ st.download_button(
     file_name="homestay_combined_data.csv",
     mime="text/csv"
 )
+
 
 
 
