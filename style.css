@@ -35,3 +35,29 @@
     background-color: #e0e7ff !important;
     font-weight: bold;
 }
+
+
+/* -------- Stretch metric cards full width -------- */
+[data-testid="stMetric"] {
+    width: 100% !important;
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+/* Bigger metric numbers */
+[data-testid="stMetricValue"] {
+    font-size: 34px;
+    font-weight: 700;
+    color: #2F539B;
+}
+
+/* Metric labels */
+[data-testid="stMetricLabel"] {
+    font-size: 16px;
+    font-weight: 600;
+    color: #36454F;
+}
+
