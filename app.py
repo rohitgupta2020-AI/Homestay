@@ -91,25 +91,47 @@ New_homestay = pd.DataFrame(rows[0])
 Upgradation_of_Existing_homestay = pd.DataFrame(rows[1])
 
 
-# ---------------- PIVOTS ----------------
+# ---------------- PIVOTS (ORIGINAL LOGIC) ----------------
 pivot_df_Upgradation = Upgradation_of_Existing_homestay.pivot_table(
     index=["district_name", "block_cluster"],
     values="member_id",
     aggfunc="count",
     dropna=False
-).reset_index().rename(columns={"member_id": "member_count_Upgradation"})
+).reset_index()
+
+pivot_df_Upgradation.rename(
+    columns={"member_id": "member_count"},
+    inplace=True
+)
 
 pivot_df_New_homestay = New_homestay.pivot_table(
     index=["district_name", "block_cluster"],
     values="member_id",
     aggfunc="count",
     dropna=False
-).reset_index().rename(columns={"member_id": "member_count_New"})
+).reset_index()
 
+pivot_df_New_homestay.rename(
+    columns={"member_id": "member_count"},
+    inplace=True
+)
+
+
+# ---------------- FILTER ----------------
 pivot_df_New_homestay = pivot_df_New_homestay[
-    pivot_df_New_homestay["member_count_New"].notna() &
-    (pivot_df_New_homestay["member_count_New"].astype(str).str.strip() != "")
+    pivot_df_New_homestay["member_count"].notna() &
+    (pivot_df_New_homestay["member_count"].astype(str).str.strip() != "")
 ]
+
+pivot_df_New_homestay.rename(
+    columns={"member_count": "member_count_New"},
+    inplace=True
+)
+
+pivot_df_Upgradation.rename(
+    columns={"member_count": "member_count_Upgradation"},
+    inplace=True
+)
 
 
 # ---------------- MERGE ----------------
@@ -121,8 +143,11 @@ combined_df = pivot_df_New_homestay.merge(
 
 
 # ---------------- TOTALS ----------------
-total_new = int(pd.to_numeric(combined_df["member_count_New"], errors="coerce").fillna(0).sum())
-total_upg = int(pd.to_numeric(combined_df["member_count_Upgradation"], errors="coerce").fillna(0).sum())
+new_col = pd.to_numeric(combined_df["member_count_New"], errors="coerce").fillna(0)
+upg_col = pd.to_numeric(combined_df["member_count_Upgradation"], errors="coerce").fillna(0)
+
+total_new = int(new_col.sum())
+total_upg = int(upg_col.sum())
 
 total_row = pd.DataFrame({
     "district_name": ["TOTAL"],
@@ -135,6 +160,20 @@ combined_df = pd.concat([total_row, combined_df], ignore_index=True)
 
 
 # ---------------- FINAL CLEANUP ----------------
+combined_df = combined_df[
+    ~(
+        (
+            combined_df["member_count_New"].isna() |
+            (combined_df["member_count_New"].astype(str).str.strip() == "")
+        )
+        &
+        (
+            combined_df["member_count_Upgradation"].isna() |
+            (combined_df["member_count_Upgradation"].astype(str).str.strip() == "")
+        )
+    )
+]
+
 combined_df.columns = combined_df.columns.str.upper().str.replace("_", " ")
 
 combined_df.rename(columns={
@@ -149,39 +188,10 @@ combined_df = combined_df[
 combined_df["NEW HOMESTAY"] = pd.to_numeric(combined_df["NEW HOMESTAY"], errors="coerce").fillna(0).astype(int)
 combined_df["UPGRADATION"] = pd.to_numeric(combined_df["UPGRADATION"], errors="coerce").fillna(0).astype(int)
 
-
-# ---------------- FILTERS ----------------
-st.markdown("## 🔎 Filters")
-
-f1, f2 = st.columns(2)
-
-district_filter = f1.multiselect(
-    "District",
-    options=sorted(combined_df["DISTRICT NAME"].unique()),
-    default=sorted(combined_df["DISTRICT NAME"].unique())
-)
-
-block_filter = f2.multiselect(
-    "Block Cluster",
-    options=sorted(combined_df["BLOCK CLUSTER"].unique()),
-    default=sorted(combined_df["BLOCK CLUSTER"].unique())
-)
-
-filtered_df = combined_df[
-    (combined_df["DISTRICT NAME"].isin(district_filter)) &
-    (combined_df["BLOCK CLUSTER"].isin(block_filter))
-]
+combined_df.index = range(1, len(combined_df) + 1)
 
 
-# ---------------- SERIAL NUMBER (DATA ROWS ONLY) ----------------
-display_df = filtered_df.copy()
-display_df.insert(0, "S. NO", "")
-
-mask = display_df["DISTRICT NAME"] != "TOTAL"
-display_df.loc[mask, "S. NO"] = range(1, mask.sum() + 1)
-
-
-# ---------------- SUMMARY ----------------
+# ---------------- UI ----------------
 st.markdown("## Summary")
 
 c1, c2, c3 = st.columns([1, 1, 1])
@@ -190,9 +200,9 @@ c2.metric("Total Upgradations", f"{total_upg:,}")
 c3.metric("Total Combined", f"{total_new + total_upg:,}")
 
 
-# ---------------- TABLE ----------------
+# ---------------- TABLE (HTML – GOOD UI) ----------------
 st.markdown(
-    display_df.to_html(
+    combined_df.to_html(
         index=False,
         classes="custom-table",
         border=0
@@ -203,8 +213,10 @@ st.markdown(
 
 # ---------------- DOWNLOAD ----------------
 st.download_button(
-    label="📥 Download Filtered Data as CSV",
-    data=display_df.to_csv(index=False),
-    file_name="homestay_combined_data_filtered.csv",
+    label="📥 Download Combined Data as CSV",
+    data=combined_df.to_csv(index=True),
+    file_name="homestay_combined_data.csv",
     mime="text/csv"
 )
+
+serial number start from total i need it from where data start and give one copy paste code  dont change anything 
