@@ -18,7 +18,7 @@ load_css()
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
-    page_title="Meghalaya Homestay Dashboard — Government of Meghalaya",
+    page_title="Chief Minister Homestay Mission — Government of Meghalaya",
     page_icon="🏠",
     layout="wide"
 )
@@ -28,7 +28,7 @@ st.markdown(
     """
     <div style="text-align:center; margin-bottom:10px;">
         <h1 style="color:#2F539B; font-weight:700; margin:0;">
-            Meghalaya Homestay Dashboard
+            CHIEF MINISTER HOMESTAY MISSION
         </h1>
         <p style="color:#36454F; font-weight:600; margin:0;">
             Government of Meghalaya
@@ -182,11 +182,11 @@ combined_df.rename(columns={
 }, inplace=True)
 
 combined_df = combined_df[
-    ["DISTRICT NAME", "BLOCK CLUSTER", "NEW HOMESTAY", "UPGRADATION"]
+    ["DISTRICT NAME", "CLUSTER NAME", "DEVELOPMENT OF NEW HOMESTAY", "UPGRADATION OF EXISTING HOMESTAY"]
 ]
 
-combined_df["NEW HOMESTAY"] = pd.to_numeric(combined_df["NEW HOMESTAY"], errors="coerce").fillna(0).astype(int)
-combined_df["UPGRADATION"] = pd.to_numeric(combined_df["UPGRADATION"], errors="coerce").fillna(0).astype(int)
+combined_df["DEVELOPMENT OF NEW HOMESTAY"] = pd.to_numeric(combined_df["NEW HOMESTAY"], errors="coerce").fillna(0).astype(int)
+combined_df["UPGRADATION OF EXISTING HOMESTAY"] = pd.to_numeric(combined_df["UPGRADATION"], errors="coerce").fillna(0).astype(int)
 
 combined_df.index = range(1, len(combined_df) + 1)
 
@@ -202,7 +202,7 @@ display_df.loc[
     "S. NO"
 ] = range(
     1,
-    len(display_df[display_df["DISTRICT NAME"] != "TOTAL"]) + 1
+    # len(display_df[display_df["DISTRICT NAME"] != "TOTAL"]) + 1
 )
 
     
@@ -210,9 +210,9 @@ display_df.loc[
 st.markdown("## Summary")
 
 c1, c2, c3 = st.columns([1, 1, 1])
-c1.metric("Total New Homestays", f"{total_new:,}")
-c2.metric("Total Upgradations", f"{total_upg:,}")
-c3.metric("Total Combined", f"{total_new + total_upg:,}")
+c1.metric("TOTAL DEVELOPMENT OF NEW HOMESTAY", f"{total_new:,}")
+c2.metric("TOTAL UPGRADATION OF EXISTING HOMESTAY", f"{total_upg:,}")
+c3.metric("TOTAL", f"{total_new + total_upg:,}")
 
 
 # ---------------- TABLE (HTML – GOOD UI) ----------------
@@ -233,6 +233,7 @@ st.download_button(
     file_name="homestay_combined_data.csv",
     mime="text/csv"
 )
+
 
 
 
