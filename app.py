@@ -18,7 +18,7 @@ load_css()
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
-    page_title="Chief Minister Homestay Mission — Government of Meghalaya",
+    page_title="Chief Minister's Homestay Mission — Government of Meghalaya",
     page_icon="🏠",
     layout="wide"
 )
@@ -28,7 +28,7 @@ st.markdown(
     """
     <div style="text-align:center; margin-bottom:10px;">
         <h1 style="color:#2F539B; font-weight:700; margin:0;">
-            CHIEF MINISTER HOMESTAY MISSION
+            CHIEF MINISTER'S HOMESTAY MISSION
         </h1>
         <p style="color:#36454F; font-weight:600; margin:0;">
             Government of Meghalaya
@@ -211,8 +211,8 @@ display_df.loc[
 st.markdown("## Summary")
 
 c1, c2, c3 = st.columns([1, 1, 1])
-c1.metric("COUNT OF TOTAL DEVELOPMENT OF NEW HOMESTAY", f"{total_new:,}")
-c2.metric("COUNT OF TOTAL UPGRADATION OF EXISTING HOMESTAY", f"{total_upg:,}")
+c1.metric("COUNT OF DEVELOPMENT OF NEW HOMESTAY", f"{total_new:,}")
+c2.metric("COUNT OF UPGRADATION OF EXISTING HOMESTAY", f"{total_upg:,}")
 c3.metric("TOTAL", f"{total_new + total_upg:,}")
 
 
