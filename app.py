@@ -139,7 +139,7 @@ combined_df = pivot_df_New_homestay.merge(
     pivot_df_Upgradation,
     on=["district_name", "block_cluster"],
     how="outer"
-).fillna("")
+).fillna("No Cluster Mapping")
 
 
 # ---------------- TOTALS ----------------
