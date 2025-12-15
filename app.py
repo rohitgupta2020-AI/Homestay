@@ -177,8 +177,8 @@ combined_df = combined_df[
 combined_df.columns = combined_df.columns.str.upper().str.replace("_", " ")
 
 combined_df.rename(columns={
-    "MEMBER COUNT NEW": "NEW HOMESTAY",
-    "MEMBER COUNT UPGRADATION": "UPGRADATION"
+    "MEMBER COUNT NEW": "DEVELOPMENT OF NEW HOMESTAY",
+    "MEMBER COUNT UPGRADATION": "UPGRADATION OF EXISTING HOMESTAY"
 }, inplace=True)
 
 combined_df = combined_df[
@@ -233,6 +233,7 @@ st.download_button(
     file_name="homestay_combined_data.csv",
     mime="text/csv"
 )
+
 
 
 
