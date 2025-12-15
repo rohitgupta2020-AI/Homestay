@@ -178,15 +178,16 @@ combined_df.columns = combined_df.columns.str.upper().str.replace("_", " ")
 
 combined_df.rename(columns={
     "MEMBER COUNT NEW": "DEVELOPMENT OF NEW HOMESTAY",
-    "MEMBER COUNT UPGRADATION": "UPGRADATION OF EXISTING HOMESTAY"
+    "MEMBER COUNT UPGRADATION": "UPGRADATION OF EXISTING HOMESTAY",
+    "BLOCK CLUSTER" : "CLUSTER NAME"
 }, inplace=True)
 
 combined_df = combined_df[
     ["DISTRICT NAME", "CLUSTER NAME", "DEVELOPMENT OF NEW HOMESTAY", "UPGRADATION OF EXISTING HOMESTAY"]
 ]
 
-combined_df["DEVELOPMENT OF NEW HOMESTAY"] = pd.to_numeric(combined_df["NEW HOMESTAY"], errors="coerce").fillna(0).astype(int)
-combined_df["UPGRADATION OF EXISTING HOMESTAY"] = pd.to_numeric(combined_df["UPGRADATION"], errors="coerce").fillna(0).astype(int)
+combined_df["DEVELOPMENT OF NEW HOMESTAY"] = pd.to_numeric(combined_df["DEVELOPMENT OF NEW HOMESTAY"], errors="coerce").fillna(0).astype(int)
+combined_df["UPGRADATION OF EXISTING HOMESTAY"] = pd.to_numeric(combined_df["UPGRADATION OF EXISTING HOMESTAY"], errors="coerce").fillna(0).astype(int)
 
 combined_df.index = range(1, len(combined_df) + 1)
 
@@ -202,7 +203,7 @@ display_df.loc[
     "S. NO"
 ] = range(
     1,
-    # len(display_df[display_df["DISTRICT NAME"] != "TOTAL"]) + 1
+    len(display_df[display_df["DISTRICT NAME"] != "TOTAL"]) + 1
 )
 
     
@@ -210,8 +211,8 @@ display_df.loc[
 st.markdown("## Summary")
 
 c1, c2, c3 = st.columns([1, 1, 1])
-c1.metric("TOTAL DEVELOPMENT OF NEW HOMESTAY", f"{total_new:,}")
-c2.metric("TOTAL UPGRADATION OF EXISTING HOMESTAY", f"{total_upg:,}")
+c1.metric("COUNT OF TOTAL DEVELOPMENT OF NEW HOMESTAY", f"{total_new:,}")
+c2.metric("COUNT OF TOTAL UPGRADATION OF EXISTING HOMESTAY", f"{total_upg:,}")
 c3.metric("TOTAL", f"{total_new + total_upg:,}")
 
 
@@ -233,6 +234,7 @@ st.download_button(
     file_name="homestay_combined_data.csv",
     mime="text/csv"
 )
+
 
 
 
