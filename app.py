@@ -189,24 +189,25 @@ combined_df = combined_df[
 combined_df["DEVELOPMENT OF NEW HOMESTAY"] = pd.to_numeric(combined_df["DEVELOPMENT OF NEW HOMESTAY"], errors="coerce").fillna(0).astype(int)
 combined_df["UPGRADATION OF EXISTING HOMESTAY"] = pd.to_numeric(combined_df["UPGRADATION OF EXISTING HOMESTAY"], errors="coerce").fillna(0).astype(int)
 
-combined_df.index = range(1, len(combined_df) + 1)
+# ---------------- REMOVE ZERO-ZERO ROWS ----------------
+combined_df = combined_df[
+    ~(
+        (combined_df["DEVELOPMENT OF NEW HOMESTAY"] == 0) &
+        (combined_df["UPGRADATION OF EXISTING HOMESTAY"] == 0)
+    )
+]
+
+
+
 
 # ---------------- FIX SERIAL NUMBER ----------------
+
 display_df = combined_df.copy()
+# display_df.insert(1, "S. NO", "")
 
-# create empty serial column
-display_df.insert(0, "S. NO", "")
-
-# assign serial numbers ONLY to data rows (exclude TOTAL)
-display_df.loc[
-    display_df["DISTRICT NAME"] != "TOTAL",
-    "S. NO"
-] = range(
-    1,
-    len(display_df[display_df["DISTRICT NAME"] != "TOTAL"]) + 1
-)
-
-    
+mask = display_df["DISTRICT NAME"] != "TOTAL"
+# display_df.loc[mask, "S. NO"] = range(1, mask.sum() + 1)
+   
 # ---------------- UI ----------------
 st.markdown("## Summary")
 
@@ -218,7 +219,7 @@ c3.metric("TOTAL", f"{total_new + total_upg:,}")
 
 # ---------------- TABLE (HTML – GOOD UI) ----------------
 st.markdown(
-    combined_df.to_html(
+        display_df.to_html(
         index=True,
         classes="custom-table",
         border=0
@@ -229,12 +230,11 @@ st.markdown(
 
 # ---------------- DOWNLOAD ----------------
 st.download_button(
-    label="📥 Download Combined Data as CSV",
-    data=combined_df.to_csv(index=True),
+    label=" Download Combined Data as CSV",
+    data=display_df.to_csv(index=True),
     file_name="homestay_combined_data.csv",
     mime="text/csv"
 )
-
 
 
 
