@@ -196,6 +196,8 @@ combined_df = combined_df[
     )
 ]
 
+# Ensure a fresh sequential index and keep TOTAL at index 0.
+combined_df = combined_df.reset_index(drop=True)
 
 
 
