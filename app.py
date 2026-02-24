@@ -92,7 +92,7 @@ Upgradation_of_Existing_homestay = pd.DataFrame(rows[1])
 
 # ---------------- PIVOTS (ORIGINAL LOGIC) ----------------
 pivot_df_Upgradation = Upgradation_of_Existing_homestay.pivot_table(
-    index=["district_name", "block_cluster"],
+    index=["district_cluster", "block_cluster"],
     values="member_id",
     aggfunc="count",
     dropna=False
@@ -104,7 +104,7 @@ pivot_df_Upgradation.rename(
 )
 
 pivot_df_New_homestay = New_homestay.pivot_table(
-    index=["district_name", "block_cluster"],
+    index=["district_cluster", "block_cluster"],
     values="member_id",
     aggfunc="count",
     dropna=False
@@ -149,7 +149,7 @@ total_new = int(new_col.sum())
 total_upg = int(upg_col.sum())
 
 total_row = pd.DataFrame({
-    "district_name": ["TOTAL"],
+    "district_cluster": ["TOTAL"],
     "block_cluster": [""],
     "member_count_New": [total_new],
     "member_count_Upgradation": [total_upg]
@@ -236,6 +236,7 @@ st.download_button(
     file_name="homestay_combined_data.csv",
     mime="text/csv"
 )
+
 
 
 
