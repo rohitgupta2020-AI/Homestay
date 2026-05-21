@@ -199,9 +199,11 @@ combined_df = combined_df[
 # ---------------- FIX SERIAL NUMBER ----------------
 
 display_df = combined_df.copy()
-display_df.insert(0, "S. NO", "")
+
+display_df.insert(0, "S. NO", np.nan)
 
 mask = display_df["DISTRICT NAME"] != "TOTAL"
+
 display_df.loc[mask, "S. NO"] = np.arange(1, mask.sum() + 1)
    
 # ---------------- UI ----------------
