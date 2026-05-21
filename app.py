@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import pandas as pd
 from pathlib import Path
+import numpy as np
 
 
 # ---------------- LOAD CSS ----------------
@@ -201,7 +202,7 @@ display_df = combined_df.copy()
 display_df.insert(0, "S. NO", "")
 
 mask = display_df["DISTRICT NAME"] != "TOTAL"
-display_df.loc[mask, "S. NO"] = range(1, mask.sum() + 1)
+display_df.loc[mask, "S. NO"] = np.arange(1, mask.sum() + 1)
    
 # ---------------- UI ----------------
 total_combined = total_new + total_upg
