@@ -13,31 +13,15 @@ def load_css():
     except Exception:
         pass
 
+load_css()
+
+
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
     page_title="Chief Minister's Homestay Mission — Government of Meghalaya",
     page_icon="🏠",
     layout="wide"
 )
-
-load_css()
-
-# ---------------- HEADER ----------------
-st.markdown(
-    """
-    <div style="text-align:center; margin-bottom:10px;">
-        <h1 style="color:#2F539B; font-weight:700; margin:0;">
-            CHIEF MINISTER'S HOMESTAY MISSION
-        </h1>
-        <p style="color:#36454F; font-weight:600; margin:0;">
-            Government of Meghalaya
-        </p>
-    </div>
-    <hr style="margin-top:15px; margin-bottom:15px;">
-    """,
-    unsafe_allow_html=True
-)
-
 
 # ---------------- API CONFIG ----------------
 url = "https://www.cmconnectvdv.meghalaya.gov.in/admin-api/api/v1/hdsbpm/getAllHomeStayData"
@@ -173,18 +157,29 @@ combined_df = combined_df[
     )
 ]
 
-combined_df.columns = combined_df.columns.str.upper().str.replace("_", " ")
+combined_df.columns = combined_df.columns.str.upper().str.replace("_", " ", regex=False)
 
 combined_df.rename(columns={
+    "DISTRICT CLUSTER": "DISTRICT NAME",
     "MEMBER COUNT NEW": "DEVELOPMENT OF NEW HOMESTAY",
     "MEMBER COUNT UPGRADATION": "UPGRADATION OF EXISTING HOMESTAY",
-    "DISTRICT CLUSTER": "DISTRICT NAME",
-    "BLOCK CLUSTER": "CLUSTER NAME"
+    "BLOCK CLUSTER" : "CLUSTER NAME"
 }, inplace=True)
 
-combined_df = combined_df[
-    ["DISTRICT NAME", "CLUSTER NAME", "DEVELOPMENT OF NEW HOMESTAY", "UPGRADATION OF EXISTING HOMESTAY"]
+display_columns = [
+    "DISTRICT NAME",
+    "CLUSTER NAME",
+    "DEVELOPMENT OF NEW HOMESTAY",
+    "UPGRADATION OF EXISTING HOMESTAY"
 ]
+missing_display_columns = [col for col in display_columns if col not in combined_df.columns]
+
+if missing_display_columns:
+    st.error(f"Final table is missing columns: {', '.join(missing_display_columns)}")
+    st.write("Available columns:", list(combined_df.columns))
+    st.stop()
+
+combined_df = combined_df[display_columns]
 
 combined_df["DEVELOPMENT OF NEW HOMESTAY"] = pd.to_numeric(combined_df["DEVELOPMENT OF NEW HOMESTAY"], errors="coerce").fillna(0).astype(int)
 combined_df["UPGRADATION OF EXISTING HOMESTAY"] = pd.to_numeric(combined_df["UPGRADATION OF EXISTING HOMESTAY"], errors="coerce").fillna(0).astype(int)
@@ -197,50 +192,104 @@ combined_df = combined_df[
     )
 ]
 
-# Ensure a fresh sequential index and keep TOTAL at index 0.
-combined_df = combined_df.reset_index(drop=True)
 
 
 
 # ---------------- FIX SERIAL NUMBER ----------------
 
 display_df = combined_df.copy()
-# display_df.insert(1, "S. NO", "")
+display_df.insert(0, "S. NO", "")
 
 mask = display_df["DISTRICT NAME"] != "TOTAL"
-# display_df.loc[mask, "S. NO"] = range(1, mask.sum() + 1)
+display_df.loc[mask, "S. NO"] = range(1, mask.sum() + 1)
    
 # ---------------- UI ----------------
-st.markdown("## Summary")
+total_combined = total_new + total_upg
+district_count = display_df.loc[mask, "DISTRICT NAME"].replace("", pd.NA).dropna().nunique()
+cluster_count = display_df.loc[mask, "CLUSTER NAME"].replace("", pd.NA).dropna().nunique()
 
-c1, c2, c3 = st.columns([1, 1, 1])
-c1.metric("COUNT OF DEVELOPMENT OF NEW HOMESTAY", f"{total_new:,}")
-c2.metric("COUNT OF UPGRADATION OF EXISTING HOMESTAY", f"{total_upg:,}")
-c3.metric("TOTAL", f"{total_new + total_upg:,}")
+st.markdown(
+    f"""
+    <section class="dashboard-hero">
+        <div>
+            <p class="eyebrow">Government of Meghalaya</p>
+            <h1>Chief Minister's Homestay Mission</h1>
+            <p class="hero-copy">
+                District and cluster level progress summary for new homestay development
+                and upgradation of existing homestays.
+            </p>
+        </div>
+        <div class="hero-stat">
+            <span>Total Applications</span>
+            <strong>{total_combined:,}</strong>
+        </div>
+    </section>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    f"""
+    <section class="metric-grid">
+        <div class="metric-card accent-green">
+            <span>Development of New Homestay</span>
+            <strong>{total_new:,}</strong>
+        </div>
+        <div class="metric-card accent-blue">
+            <span>Upgradation of Existing Homestay</span>
+            <strong>{total_upg:,}</strong>
+        </div>
+        <div class="metric-card accent-amber">
+            <span>Districts Covered</span>
+            <strong>{district_count:,}</strong>
+        </div>
+        <div class="metric-card accent-slate">
+            <span>Clusters Covered</span>
+            <strong>{cluster_count:,}</strong>
+        </div>
+    </section>
+    """,
+    unsafe_allow_html=True
+)
 
 
 # ---------------- TABLE (HTML – GOOD UI) ----------------
 st.markdown(
-        display_df.to_html(
-        index=True,
+    """
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">Live Summary</p>
+            <h2>District and Cluster Report</h2>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    f"""
+    <div class="table-shell">
+        {display_df.to_html(
+        index=False,
         classes="custom-table",
         border=0
-    ),
+    )}
+    </div>
+    """,
     unsafe_allow_html=True
 )
 
 
 # ---------------- DOWNLOAD ----------------
-st.download_button(
-    label=" Download Combined Data as CSV",
-    data=display_df.to_csv(index=True),
-    file_name="homestay_combined_data.csv",
-    mime="text/csv"
-)
-
-
-
-
+download_col, _ = st.columns([1, 3])
+with download_col:
+    st.download_button(
+        label="Download CSV",
+        data=display_df.to_csv(index=False),
+        file_name="homestay_combined_data.csv",
+        mime="text/csv",
+        use_container_width=True
+    )
 
 
 
