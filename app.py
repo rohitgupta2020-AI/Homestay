@@ -4,7 +4,6 @@ import pandas as pd
 from pathlib import Path
 import numpy as np
 
-
 # ---------------- LOAD CSS ----------------
 def load_css():
     css_path = Path(__file__).with_name("style.css")
@@ -193,6 +192,13 @@ combined_df = combined_df[
     )
 ]
 
+total_df = combined_df[combined_df["DISTRICT NAME"] == "TOTAL"]
+data_df = combined_df[combined_df["DISTRICT NAME"] != "TOTAL"].sort_values(
+    by="DEVELOPMENT OF NEW HOMESTAY",
+    ascending=False
+)
+combined_df = pd.concat([total_df, data_df], ignore_index=True)
+
 
 
 
@@ -218,7 +224,7 @@ st.markdown(
             <p class="eyebrow">Government of Meghalaya</p>
             <h1>Chief Minister's Homestay Mission</h1>
             <p class="hero-copy">
-                District and cluster level progress summary for new homestay development
+                District and cluster summary for new homestay development
                 and upgradation of existing homestays.
             </p>
         </div>
@@ -261,7 +267,7 @@ st.markdown(
     """
     <div class="section-heading">
         <div>
-            <p class="eyebrow">Live Summary</p>
+            <p class="eyebrow">Summary</p>
             <h2>District and Cluster Report</h2>
         </div>
     </div>
