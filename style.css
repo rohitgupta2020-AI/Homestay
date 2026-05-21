@@ -1,63 +1,245 @@
+/* -------- App Shell -------- */
+.stApp {
+    background:
+        radial-gradient(circle at top left, rgba(36, 99, 235, 0.10), transparent 30rem),
+        linear-gradient(180deg, #f7faf9 0%, #eef4f3 100%);
+    color: #172033;
+}
+
+.block-container {
+    max-width: 1220px;
+    padding-top: 2rem;
+    padding-bottom: 2.5rem;
+}
+
+#MainMenu,
+footer,
+header {
+    visibility: hidden;
+}
+
+/* -------- Hero -------- */
+.dashboard-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+    gap: 1.5rem;
+    align-items: end;
+    padding: 2rem;
+    margin-bottom: 1.25rem;
+    color: #ffffff;
+    background:
+        linear-gradient(135deg, rgba(20, 83, 45, 0.96), rgba(15, 76, 129, 0.94)),
+        url("assets/homestay.png.jpg");
+    background-size: cover;
+    background-position: center;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
+}
+
+.eyebrow {
+    margin: 0 0 0.45rem;
+    color: inherit;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    opacity: 0.78;
+}
+
+.dashboard-hero h1 {
+    margin: 0;
+    max-width: 780px;
+    color: #ffffff;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.02;
+    font-weight: 850;
+    letter-spacing: 0;
+}
+
+.hero-copy {
+    max-width: 680px;
+    margin: 1rem 0 0;
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 1rem;
+    line-height: 1.55;
+}
+
+.hero-stat {
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.13);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+.hero-stat span,
+.metric-card span {
+    display: block;
+    color: inherit;
+    font-size: 0.82rem;
+    font-weight: 750;
+    line-height: 1.35;
+    opacity: 0.78;
+}
+
+.hero-stat strong {
+    display: block;
+    margin-top: 0.5rem;
+    color: #ffffff;
+    font-size: 2.35rem;
+    line-height: 1;
+}
+
+/* -------- Metrics -------- */
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.85rem;
+    margin: 1.1rem 0 1.6rem;
+}
+
+.metric-card {
+    position: relative;
+    min-height: 122px;
+    padding: 1.1rem 1rem 1rem;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #dbe5e3;
+    border-radius: 8px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07);
+}
+
+.metric-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 5px;
+    background: var(--accent);
+}
+
+.metric-card strong {
+    display: block;
+    margin-top: 0.75rem;
+    color: #172033;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.accent-green {
+    --accent: #14b877;
+}
+
+.accent-blue {
+    --accent: #2563eb;
+}
+
+.accent-amber {
+    --accent: #d97706;
+}
+
+.accent-slate {
+    --accent: #475569;
+}
+
+/* -------- Section Heading -------- */
+.section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    margin: 0.5rem 0 0.8rem;
+}
+
+.section-heading .eyebrow {
+    color: #0f766e;
+}
+
+.section-heading h2 {
+    margin: 0;
+    color: #172033;
+    font-size: 1.45rem;
+    line-height: 1.2;
+    letter-spacing: 0;
+}
+
 /* -------- Custom HTML Table -------- */
+.table-shell {
+    overflow-x: auto;
+    background: #ffffff;
+    border: 1px solid #dbe5e3;
+    border-radius: 8px;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+}
+
 .custom-table {
     width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-}
-
-.custom-table th {
-    background-color: #eef2ff;
-    color: #1f2a44;
-    padding: 12px;
-    text-align: center;
-    font-weight: 600;
-    border-bottom: 1px solid #dfe3f0;
-}
-
-.custom-table td {
-    padding: 10px;
-    text-align: center;
-    color: #1f2a44;
-    border-bottom: 1px solid #eef1f7;
-}
-
-/* Zebra rows */
-.custom-table tr:nth-child(even) {
-    background-color: #f9fbff;
-}
-
-/* TOTAL row highlight */
-.custom-table tr:first-child {
-    background-color: #e0e7ff !important;
-    font-weight: bold;
-}
-
-
-/* -------- Stretch metric cards full width -------- */
-[data-testid="stMetric"] {
-    width: 100% !important;
+    min-width: 820px;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.9rem;
     background: #ffffff;
-    padding: 24px;
-    border-radius: 14px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+.custom-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #153e52;
+    color: #ffffff;
+    padding: 0.9rem 0.8rem;
     text-align: center;
+    font-weight: 800;
+    border-bottom: 1px solid #123544;
 }
 
-/* Bigger metric numbers */
-[data-testid="stMetricValue"] {
-    font-size: 34px;
-    font-weight: 700;
-    color: #2F539B;
+.custom-table tbody td {
+    padding: 0.85rem 0.8rem;
+    text-align: center;
+    color: #1f2937;
+    border-bottom: 1px solid #e7eeec;
 }
 
-/* Metric labels */
-[data-testid="stMetricLabel"] {
-    font-size: 16px;
-    font-weight: 600;
-    color: #36454F;
+.custom-table tbody tr:nth-child(even) {
+    background: #f7fbfa;
 }
 
+.custom-table tbody tr:hover {
+    background: #ecfdf5;
+}
+
+.custom-table tbody tr:first-child {
+    background: #dff7ed !important;
+    font-weight: 850;
+}
+
+.custom-table tbody tr:first-child td {
+    color: #064e3b;
+}
+
+/* -------- Streamlit Controls -------- */
+.stDownloadButton button {
+    min-height: 2.8rem;
+    color: #ffffff;
+    background: #0f766e;
+    border: 1px solid #0f766e;
+    border-radius: 8px;
+    font-weight: 800;
+    box-shadow: 0 10px 22px rgba(15, 118, 110, 0.22);
+}
+
+.stDownloadButton button:hover {
+    color: #ffffff;
+    background: #115e59;
+    border-color: #115e59;
+}
+
+@media (max-width: 900px) {
+    .dashboard-hero,
+    .metric-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-hero {
+        padding: 1.4rem;
+    }
+}
