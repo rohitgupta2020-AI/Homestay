@@ -133,10 +133,12 @@ total_new = int(new_col.sum())
 total_upg = int(upg_col.sum())
 
 total_row = pd.DataFrame({
+    "S. NO": [""],
     "district_cluster": ["TOTAL"],
     "block_cluster": [""],
     "member_count_New": [total_new],
     "member_count_Upgradation": [total_upg]
+
 })
 
 combined_df = pd.concat([total_row, combined_df], ignore_index=True)
